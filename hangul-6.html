@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>문장 탐험대 (6살)</title>
+
+<style>
+:root{--bg:#e3f4ff;--card:#fff;--ink:#1d3557;--ok:#2a9d8f;--no:#e76f51;--pt:#457b9d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17263a;--card:#223654;--ink:#eaf4ff}}
+:root[data-theme="dark"]{--bg:#17263a;--card:#223654;--ink:#eaf4ff}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;display:flex;flex-direction:column;align-items:center;padding:12px;text-align:center}
+#top{width:100%;max-width:460px;display:flex;justify-content:space-between;font-size:20px}
+#bar{width:100%;max-width:460px;height:12px;background:var(--card);border-radius:8px;overflow:hidden;margin:6px 0 10px}
+#fill{height:100%;width:0;background:var(--ok);transition:width .4s}
+#pic{font-size:min(30vw,130px);line-height:1.1}
+#sen{font-size:min(8vw,36px);line-height:1.6;margin:8px 0;max-width:460px;word-break:keep-all}
+#blank{display:inline-block;min-width:3.2em;border-bottom:4px dashed var(--pt);color:var(--ok)}
+#listen{font:inherit;font-size:20px;background:var(--card);color:var(--ink);border:3px solid var(--pt);border-radius:20px;padding:8px 20px;cursor:pointer;margin-bottom:14px}
+#choices{display:grid;gap:10px;width:100%;max-width:460px}
+.c{font:inherit;font-size:min(9vw,38px);background:var(--card);color:var(--ink);border:4px solid var(--pt);border-radius:22px;padding:12px;cursor:pointer}
+.c:active{transform:scale(.97)}
+.c.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.c.no{animation:sh .4s;border-color:var(--no)}
+@keyframes sh{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+.big{font:inherit;font-size:28px;background:var(--pt);color:#fff;border:0;border-radius:30px;padding:14px 38px;cursor:pointer;margin-top:18px}
+#end{display:none}
+:focus-visible{outline:4px solid var(--ok);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.c.no{animation:none}#fill{transition:none}}
+body{padding-bottom:64px}#rb{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);right:10px;font:inherit;font-size:16px;background:var(--card);color:var(--ink);border:3px solid var(--pt);border-radius:16px;padding:6px 12px;cursor:pointer;z-index:5}#rec{position:fixed;inset:0;background:var(--bg);color:var(--ink);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 24px;z-index:10;text-align:left}#rec[hidden]{display:none}#rec h2{font-size:22px;margin:18px 0 6px}#rec p{font-size:19px}.row{display:flex;justify-content:space-between;background:var(--card);border-radius:12px;padding:8px 14px;margin:6px 0;font-size:20px}.bars{display:flex;gap:6px;align-items:flex-end;height:170px;background:var(--card);border-radius:12px;padding:10px}.bc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}.bar{width:100%;background:var(--ok);border-radius:6px 6px 0 0;min-height:2px}.bc small{font-size:13px}#md{display:flex;gap:8px;margin-bottom:8px}#md button{font:inherit;font-size:18px;background:var(--card);color:var(--ink);border:3px solid var(--pt);border-radius:16px;padding:6px 14px;cursor:pointer}#md button.on{background:var(--pt);color:#fff}.c.lc{font-size:min(6vw,26px);line-height:1.4;word-break:keep-all}#rs{font:inherit;font-size:16px;background:none;color:var(--ink);border:2px solid var(--no);border-radius:14px;padding:8px 14px;cursor:pointer;margin-top:12px}</style></head><body><button id="rb" data-a="rec">📊 기록</button><div id="rec" hidden></div>
+<div id="md"><button id="m0" class="on" data-a="sm0">✏️ 빈칸 채우기</button><button id="m1" data-a="sm1">👂 듣고 고르기</button></div><div id="top"><span id="n"></span><span id="s"></span></div>
+<div id="bar"><div id="fill"></div></div>
+<div id="ld">⏳ 불러오는 중이에요… 계속 이 화면이면 알려주세요</div><div id="game">
+<div id="pic"></div>
+<div id="sen"></div>
+<button id="listen">🔊 읽어 주세요</button>
+<div id="choices"></div>
+</div>
+<div id="end"><div style="font-size:90px">🏆</div><h1>문장 탐험 성공!</h1><div id="sc" style="font-size:32px"></div><button class="big" data-a="start">또 하기</button></div>
+<script>
+var S=[["🐰","토끼가 ","당근","을 먹어요.",["우산","책"]],["🐶","강아지가 ","멍멍","짖어요.",["야옹","꿀꿀"]],["☀️","하늘에 ","해","가 떠요.",["물고기","신발"]],["📚","나는 ","책","을 읽어요.",["공","모자"]],["🌧️","비가 오면 ","우산","을 써요.",["양말","숟가락"]],["🐟","물고기가 ","물","에서 헤엄쳐요.",["산","침대"]],["🦷","아침에 ","이","를 닦아요.",["손","신발"]],["🚌","우리는 ","버스","를 타고 학교에 가요.",["과자","나무"]],["🍚","엄마가 ","밥","을 만들어요.",["구름","가방"]],["🌙","밤에는 ","달","이 떠요.",["수박","의자"]],["🛏️","졸리면 ","침대","에서 자요.",["냉장고","나비"]],["🍎","나는 ","사과","를 좋아해요.",["바위","자동차"]],["🧦","발에 ","양말","을 신어요.",["모자","장갑"]],["🐱","고양이가 ","야옹","하고 울어요.",["멍멍","꼬꼬"]]];
+var N=10,i,q,pts,done;
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="ko-KR";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function sh(a){return a.slice().sort(function(){return Math.random()-.5})}
+function start(){var l=document.getElementById('ld');if(l)l.hidden=true;q=sh(M?L:S).slice(0,N);i=0;pts=0;document.getElementById("end").style.display="none";document.getElementById("game").style.display="block";show()}
+function upd(){document.getElementById("n").textContent=(Math.min(i+1,N))+" / "+N;document.getElementById("s").textContent="⭐ "+pts;document.getElementById("fill").style.width=(i/N*100)+"%"}
+function show(){if(M)return showL();
+  done=false;var x=q[i],tries=0;upd();
+  document.getElementById("pic").textContent=x[0];
+  document.getElementById("sen").innerHTML=x[1]+'<span id="blank">&nbsp;?&nbsp;</span>'+x[3];
+  var full=x[1]+x[2]+x[3];
+  document.getElementById("listen").onclick=function(){say(full)};
+  var c=document.getElementById("choices");c.innerHTML="";
+  sh([x[2]].concat(x[4])).forEach(function(w){
+    var b=document.createElement("button");b.className="c";b.textContent=w;
+    b.onclick=function(){
+      if(done)return;
+      if(w===x[2]){done=true;b.classList.add("ok");document.getElementById("blank").textContent=w;
+        if(tries===0)pts++;say(full);
+        setTimeout(function(){i++;if(i<N)show();else fin()},2600)}
+      else{tries++;b.classList.remove("no");void b.offsetWidth;b.classList.add("no");say("다시 읽어 봐요")}
+    };c.appendChild(b)});
+  setTimeout(function(){say(x[1]+" 무엇 "+x[3])},300)
+}
+var M=0,KEY='hg6';window.addEventListener('error',function(e){var d=document.getElementById('ld');if(d){d.hidden=false;d.textContent='오류: '+e.message}});document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-a]');if(!b)return;var a=b.getAttribute('data-a');if(a==='rec')rec();else if(a==='cl')cl();else if(a==='rz')rz();else if(a==='start')start();else if(a==='sm0')sm(0);else if(a==='sm1')sm(1)});var L=[['토끼가 당근을 먹어요.',['토끼가 사과를 먹어요.','토끼가 우유를 먹어요.']],['강아지가 공을 가지고 놀아요.',['강아지가 책을 가지고 놀아요.','고양이가 공을 가지고 놀아요.']],['나는 아침에 우유를 마셔요.',['나는 아침에 물을 마셔요.','나는 저녁에 우유를 마셔요.']],['엄마와 함께 시장에 가요.',['아빠와 함께 시장에 가요.','엄마와 함께 학교에 가요.']],['비가 오면 우산을 써요.',['눈이 오면 우산을 써요.','비가 오면 모자를 써요.']],['고양이가 침대에서 자요.',['고양이가 의자에서 자요.','강아지가 침대에서 자요.']],['친구와 같이 공원에서 놀아요.',['친구와 같이 학교에서 놀아요.','동생과 같이 공원에서 놀아요.']],['나는 빨간 사과를 좋아해요.',['나는 노란 사과를 좋아해요.','나는 빨간 딸기를 좋아해요.']],['아빠가 차를 운전해요.',['엄마가 차를 운전해요.','아빠가 버스를 운전해요.']],['하늘에 하얀 구름이 떠 있어요.',['하늘에 하얀 달이 떠 있어요.','바다에 하얀 구름이 떠 있어요.']],['오리가 연못에서 헤엄쳐요.',['오리가 바다에서 헤엄쳐요.','거북이가 연못에서 헤엄쳐요.']],['우리는 버스를 타고 학교에 가요.',['우리는 기차를 타고 학교에 가요.','우리는 버스를 타고 공원에 가요.']],['나는 밥을 먹고 이를 닦아요.',['나는 밥을 먹고 손을 씻어요.','나는 간식을 먹고 이를 닦아요.']]];function sm(m){M=m;KEY=m?'hg6b':'hg6';document.getElementById('m0').className=m?'':'on';document.getElementById('m1').className=m?'on':'';start()}function showL(){done=false;var x=q[i],tries=0;upd();document.getElementById('pic').textContent='👂';document.getElementById('sen').textContent='잘 듣고 같은 문장을 골라요';var rd=function(){say(x[0])};document.getElementById('listen').onclick=rd;var c=document.getElementById('choices');c.innerHTML='';sh([x[0]].concat(x[1])).forEach(function(w){var b=document.createElement('button');b.className='c lc';b.textContent=w;b.onclick=function(){if(done)return;if(w===x[0]){done=true;b.classList.add('ok');if(!tries)pts++;say(x[0]);setTimeout(function(){i++;if(i<N)show();else fin()},2800)}else{tries++;b.classList.remove('no');void b.offsetWidth;b.classList.add('no');say('다시 들어 봐요');setTimeout(rd,1300)}};c.appendChild(b)});setTimeout(rd,300)}function ld(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}function sv(s){try{var a=ld();a.push({t:Date.now(),s:s});localStorage.setItem(KEY,JSON.stringify(a.slice(-500)))}catch(e){}}function rg(a,f,t){return a.filter(function(r){return r.t>=f&&r.t<t})}function av(a){return a.length?Math.round(a.reduce(function(x,r){return x+r.s},0)/a.length):null}function cmp(n,o,nm){if(!n.length)return '기록이 아직 없어요.';var x=av(n),y=av(o);var s='평균 '+x+'점 ('+n.length+'회)';if(y==null)return s;var d=x-y;return s+' · '+nm+'보다 '+(d>0?'+'+d+'점 올랐어요 🎉':d<0?(-d)+'점 낮아요. 괜찮아요, 다시 해봐요!':'같아요')}function bars(l){return '<div class=bars>'+l.map(function(b){return '<div class=bc><div class=bar style=height:'+(b[1]==null?2:b[1]*1.1)+'px></div><small>'+(b[1]==null?'-':b[1])+'</small><small>'+b[0]+'</small></div>'}).join('')+'</div>'}function rec(){var a=ld(),D=864e5,n=new Date(),t0=new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(),h='<h1>📊 점수 기록</h1><p>'+(M?'듣고 고르기':'빈칸 채우기')+'</p>',td=rg(a,t0,t0+D),k,s,d,l=[];h+='<h2>오늘</h2>'+(td.length?td.map(function(r,i){var e=new Date(r.t);return '<div class=row><span>'+(i+1)+'회차 · '+e.getHours()+':'+('0'+e.getMinutes()).slice(-2)+'</span><b>'+r.s+'점</b></div>'}).join(''):'<p>오늘은 아직 기록이 없어요.</p>');for(k=6;k>=0;k--){s=t0-k*D;d=new Date(s);l.push(['일월화수목금토'.charAt(d.getDay()),av(rg(a,s,s+D))])}h+='<h2>이번 주 (최근 7일)</h2>'+bars(l)+'<p>'+cmp(rg(a,t0-6*D,t0+D),rg(a,t0-13*D,t0-6*D),'지난주')+'</p>';l=[];for(k=3;k>=0;k--){l.push([k?k+'주 전':'이번 주',av(rg(a,t0-(k*7+6)*D,t0-k*7*D+D))])}h+='<h2>이번 달 (최근 4주)</h2>'+bars(l)+'<p>'+cmp(rg(a,t0-27*D,t0+D),rg(a,t0-55*D,t0-27*D),'지난달')+'</p>';h+='<button class=big data-a=cl>닫기</button> <button id=rs data-a=rz>기록 지우기</button>';var p=document.getElementById('rec');p.innerHTML=h;p.hidden=false}function cl(){document.getElementById('rec').hidden=true}function rz(){var b=document.getElementById('rs');if(b.dataset.c){try{localStorage.removeItem(KEY)}catch(e){}rec()}else{b.dataset.c=1;b.textContent='정말 지울까요? 한 번 더 누르세요'}}function fin(){sv(pts*10);i=N;upd();document.getElementById("game").style.display="none";document.getElementById("end").style.display="block";document.getElementById("sc").innerHTML="<div>"+N+"문제 중 "+pts+"개를 처음에 맞혔어요</div><div style='margin-top:10px;font-size:44px'>"+(pts*10)+"점 / 100점</div>";say("참 잘했어요. "+(pts*10)+"점이에요")}
+start();
+</script></body></html>
